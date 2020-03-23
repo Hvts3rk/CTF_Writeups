@@ -12,3 +12,6 @@ A questo punto navigo un po nel sito web, trovo un form autenticativo per la par
 ```
 mount -t nfs 10.10.10.180:/site_backups /tmp/remote_htb/
 ```
+Spulciando nei files ho trovato questo account:
+*admin@htb.local*
+
