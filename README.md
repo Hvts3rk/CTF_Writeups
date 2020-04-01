@@ -10,20 +10,24 @@ They are written in Italian and I have foreseen their translation in English in 
 
 ## State Of Art
 
-At the moment there are the following machines' writeups:
+At the moment you can find following machines' writeups:
 
 ```
 HTB:
-* OpenAdmin
-* Older machines' writeups are being processed...
+* O p e n  A d m i n
+* D Y S M
+* S a u n a
+* F o r e s t
+* M D 4 L i f e
+* R e m o t e 
 ```
 
 ```
 ROPEmporium
-* CallMe
-* Ret2Win
-* Split
-* Write4
+* C a l l  M e
+* R e t 2 W i n
+* S p l i t
+* W r i t e 4 
 ```
 
 ## Author
