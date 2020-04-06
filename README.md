@@ -20,6 +20,7 @@ HTB:
 * F o r e s t
 * M D 4 L i f e
 * R e m o t e 
+* R e s o l u t e
 ```
 
 ```
