@@ -76,6 +76,8 @@ Trovo così l'utenza di melanie. Entro nel sistema e trovo il primo flag!
 
 ## Privilege Escalation
 
+#### Phase 1
+
 Ho tentato svariati tentativi, ho lanciato WinPeas, ho provato a recuperare le credenziali di AutoLogon di Administrator tramite Metasploit ma non sono riuscito a recuperare niente. Questo punto ho notato che esistono tanti utenti presenti all'interno del sistema quindi ho ricercato possibili credenziali in chiaro. 
 
 Inizialmente non ho rinvenuto alcun file, quindi ho cercato i file nascosti (partendo da melanie) con:
@@ -92,5 +94,25 @@ Fra tutti i file, mi è saltato all'occhio:
 
 Aprendolo trovo le credenziali per l'utente ryan, in chiaro! Quindi loggo all'interno del sistema con le sue creds.
 
+#### Phase 2
+
+Ho lanciato nuovamente winPEAS ma non ho trovato nulla, quindi comincio con la verifica dei permessi e dei gruppi:
+
+```
+net user ryan /domain
+```
+Ma non trovo niente, quindi provo con: 
+```
+whoami /all
+```
+
+E leggo la riga: 
+
+```
+MEGABANK\DnsAdmins   Alias S-1-5-21-[...]-3596683436-1101 Mandatory group, Enabled by default, Enabled group, Local Group
+
+```
+
+Quindi noto che appartiene al gruppo DnsAdmins, vulnerabile (di cui esiste anche un exploit in Msf).
 
     
