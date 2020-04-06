@@ -1,6 +1,6 @@
 # Hvts3rk CTF Writeups
 
-Collection of personal writeups. Notes taken from HackTheBox, VulnHub, etc ...
+Collection of personal writeups. Notes taken from HackTheBox, VulnHub, ROPEmporium, etc ...
 
 ## Before Reading
 
@@ -13,7 +13,7 @@ They are written in Italian and I have foreseen their translation in English in 
 At the moment you can find following machines' writeups:
 
 ```
-HTB:
+**HTB:**
 * O p e n  A d m i n
 * D Y S M
 * S a u n a
@@ -24,7 +24,7 @@ HTB:
 ```
 
 ```
-ROPEmporium
+**ROPEmporium**
 * C a l l  M e
 * R e t 2 W i n
 * S p l i t
