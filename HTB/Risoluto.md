@@ -75,4 +75,22 @@ for x in users:
 Trovo così l'utenza di melanie. Entro nel sistema e trovo il primo flag!
 
 ## Privilege Escalation
+
+Ho tentato svariati tentativi, ho lanciato WinPeas, ho provato a recuperare le credenziali di AutoLogon di Administrator tramite Metasploit ma non sono riuscito a recuperare niente. Questo punto ho notato che esistono tanti utenti presenti all'interno del sistema quindi ho ricercato possibili credenziali in chiaro. 
+
+Inizialmente non ho rinvenuto alcun file, quindi ho cercato i file nascosti (partendo da melanie) con:
+
+```
+Get-ChildItem -Force -Hidden -Recurse 2>$null
+```
+
+Ma non ho trovato nulla. Quindi, facendo partire il comando dalla root del disco C: trovo parecchi file interessanti nascosti, fra cui anche il SAM e SYSTEM. (Ma forse non sono accessibili, non ho provato).
+
+Fra tutti i file, mi è saltato all'occhio:
+
+* PowerShell_transcript...txt
+
+Aprendolo trovo le credenziali per l'utente ryan, in chiaro! Quindi loggo all'interno del sistema con le sue creds.
+
+
     
