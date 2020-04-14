@@ -29,3 +29,24 @@ Tramite l'exploit trovo i seguenti dati:
 admin:h3[...]5H
 mango:t9[...]#2
 ```
+
+Provo quindi a collegarmi al tab di login con le creds trovate ma non succede nulla.
+
+Quindi provo a collegarmi in ssh con le creds trovate e trovo efficace la seguente combinazione:
+```
+mango:h3[...]5H
+```
+Rintraccio l'user flag dentro la cartella dell'utenza "admin" ma non ho i permessi per aprirla.
+
+## Privilege Escalation
+
+### User1
+
+Cerco qualche password salvata ma non trovo nulla. Ad un certo punto penso che la seconda password trova in DB possa servire a qualcosa quindi banalmente faccio:
+```
+su admin
+```
+
+Inserisco la seconda password (t9[...]#2) ed eccomi entrato in sessione con l'utenza Admin! Apro l'user flag!
+
+### Root
