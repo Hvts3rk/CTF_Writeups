@@ -14,6 +14,7 @@ At the moment you can find following machines' writeups:
 
 ```
 **HTB:**
+
 * O p e n  A d m i n
 * D Y S M
 * S a u n a
@@ -21,10 +22,12 @@ At the moment you can find following machines' writeups:
 * M D 4 L i f e
 * R e m o t e 
 * R e s o l u t e
+* M a n g o
 ```
 
 ```
 **ROPEmporium**
+
 * C a l l  M e
 * R e t 2 W i n
 * S p l i t
