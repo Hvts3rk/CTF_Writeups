@@ -85,3 +85,13 @@ echo "os.execute("/bin/bash -i")" > /home/webadmin/privesc.lua
 sudo -u sysadmin /home/sysadmin/luvit privesc.lua
 ```
 Ed ecco aperta una shell con l'utenza _SysAdmin_ e prelevo lo user.txt flag! 
+
+### Root
+
+A questo punto mi sposto in /tmp, creo una copia di LinEnum, lo eseguo, ma non rintraccio nulla. Considerato che lui non ha portato risultati provo con PsPy e scopro che Root invoca il banner di benvenuto quando qualcuno si collega via SSH. Quindi trovo che SysAdmin può editare il banner di benvenuto SSH locato in:
+
+```
+etc/update-motd.d/00-header
+```
+
+A questo punto il gioco è fatto, posso scegliere se stampre il flag o aprire una root shell modificando il file. 
