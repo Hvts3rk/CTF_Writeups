@@ -46,3 +46,42 @@ for tag2 in soup.findAll("a", {"class": "js-navigation-open"}):
 Generata la wordlist la do in pasto a dirbuster e scopro effettivamente la presenza del tab "smevk.php".
 
 ## WebExploitation
+
+Visito la pagina e trovo un form di login. Provo banalmente con le creds "admin:admin" ed entro. 
+
+Leggo innanzitutto il file note.txt e mi da un indizio, mi dice che devo sfruttare uno scriptino "lua" che è stato lasciato in giro. Dentro la home folder trovo le cartelle di due utenti: webadmin e sysadmin. Io sono webadmin e, ovviamente, il flag è dentro sysadmin. Ma non ho i privilegi per aprirlo. 
+
+_Avrei potuto eseguire tutto a mano tramite webshell ma per comodità, avendo rintracciato il file "authorized_keys" dentro .ssh, mi apro una connessione via ssh_
+
+Quindi genero una coppia di rsa_keys con *rsa-keygen*, carico la chiave pubblica dentro al file sopracitato dando da webshell il comando:
+
+```
+echo "pub_key[...]" > authorized_keys
+```
+
+Quindi entro in ssh da locale con: 
+
+```
+ssh -i id-rsa webadmin@traceback.htb
+```
+
+Inserendo quindi la passphrase (che conoscevo) che avevo inserito in fase di creazione della coppia di chiavi. 
+
+## Privilege Escalation
+
+### Sysadmin
+
+Ritornando allo step precedente, devo effettuare un piccolo privilege escalation da *Webadmin* a *Sysadmin*. La prima cosa che faccio è un:
+
+```
+sudo -l
+cat .bash_histoy
+```
+
+Scopro così che l'utente *webadmin* può eseguire in sudo senza password a nome di *sysadmin* lo script in _home/sysadmin/*luvit*_ . Incrociando questo, con quanto scoperto su GTFOBins in merito agli script LUA, riesco ad aprirmi una shell con l'utenza di Sysadmin:
+
+```
+echo "os.execute("/bin/bash -i")" > /home/webadmin/privesc.lua
+sudo -u sysadmin /home/sysadmin/luvit privesc.lua
+```
+Ed ecco aperta una shell con l'utenza _SysAdmin_ e prelevo lo user.txt flag! 
