@@ -23,6 +23,7 @@ At the moment you can find following machines' writeups:
 * R e m o t e 
 * R e s o l u t e
 * M a n g o
+* T r a c e b a c k
 ```
 
 ```
