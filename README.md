@@ -25,6 +25,7 @@ At the moment you can find following machines' writeups:
 * M a n g o
 * T r a c e b a c k
 * E Z P Z
+* M a g i c 
 ```
 
 ```
