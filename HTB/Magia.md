@@ -23,3 +23,9 @@ Arrivato al form di upload capisco che devo caricare una web shell in php, uso b
 * Visito il path dov'è collocata la risorsa (http://magic/images/uploads/a.php.png) 
 
 Ed ecco che mi ritrovo davanti la webshell! 
+
+```
+########### ########### ########### ###########
+Alternativa: usare msfvenom per generare una meterpreter_reverse_tcp, quindi stabilire un handler su msfconsole in ascolto sulla porta stabilita. 
+########### ########### ########### ###########
+```
