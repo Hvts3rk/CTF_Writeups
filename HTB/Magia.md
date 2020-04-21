@@ -12,3 +12,14 @@ password: abcabcabc
 ```
 
 (NOTA: a FE c'è un filtro caratteri. Per bypassarlo modifico la richiesta con Burp) Riesco così a loggarmi ed accedo direttamente al form di image upload.
+
+## Web Exploitation
+
+Arrivato al form di upload capisco che devo caricare una web shell in php, uso b374k. Adesso devo capire come caricarla bypassando tutti i controlli di sicurezza. Alla fine, ci sono riuscito effettuando: 
+
+* Creo png da 1px
+* Rinomino il png in image.php.png
+* Carico l'immagine tramite l'uploader, quindi con Burp intercetto la richiesta ed aggiungo in coda il codice sorgente di __b374k
+* Visito il path dov'è collocata la risorsa (http://magic/images/uploads/a.php.png) 
+
+Ed ecco che mi ritrovo davanti la webshell! 
