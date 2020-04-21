@@ -40,3 +40,11 @@ Navigo nelle directory del webserver e rintraccio le credenziali di connessione 
 private static $dbUsername = 'theseus';
 private static $dbUserPassword = 'i[...]s';
 ```
+
+Provo a collegarmi via ssh con le credenziali trovate ma la coppia kpub e kpriv non è riconosciuta. Quindi utilizzo le creds per accedere al db. Tuttavia, tramite:
+```
+mysql -u theseus -p Magic
+```
+Non riesco a collegarmi quindi uso mysqldump rintracciato fra i binary a mia disposizione.
+
+Effettuo così il dump delle vere credenziali di Theseus.
