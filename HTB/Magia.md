@@ -48,3 +48,13 @@ mysql -u theseus -p Magic
 Non riesco a collegarmi quindi uso mysqldump rintracciato fra i binary a mia disposizione.
 
 Effettuo così il dump delle vere credenziali di Theseus.
+
+Ultimo step prima dell'user flag è spawnare una tty shell (considerando che via ssh non ne ho accesso):
+```
+python3 -c "__import__('pty').spawn('/bin/bash')"
+(unico comando funzionante fra tutti i metodi!)
+```
+
+Per mantenere la persistenza appendo la mia kpub dentro al file .ssh/authorized_keys, riuscendo così finalmente ad accedere via ssh usando la mia kpriv! 
+
+### Theseus -> Root
