@@ -58,3 +58,29 @@ python3 -c "__import__('pty').spawn('/bin/bash')"
 Per mantenere la persistenza appendo la mia kpub dentro al file .ssh/authorized_keys, riuscendo così finalmente ad accedere via ssh usando la mia kpriv! 
 
 ### Theseus -> Root
+
+Dopo essermi collegato in SSH mi sposto in /tmp e carico un po di script, LSE.sh, LE.sh e li lancio. Quello che emerge è veramente poco. Dopo ore di analisi noto un binario con SUID: sysinfo. 
+
+Analizzo il binario con:
+
+```
+strings sysinfo
+```
+e noto che vengono richiamata diversi binari esterni. Ne scelgo uno, free. 
+
+Quindi l'idea di base è di creare un binario finto clone di "free" in cui gli do il comando "cat /root/root.txt". Quindi, una volta lanciato sysinfo, avendo alterato la variabile globale PATH, lui andrà ad eseguire quel binario da me creato. In sostanza questo si traduce nei seguenti comandi:
+
+```
+PATH=.:$PATH
+
+touch free
+
+echo "cat /root/root.txt" > free
+
+chmod +x free
+
+sysinfo
+
+```
+
+Questo è quanto! 🍾
