@@ -26,6 +26,8 @@ Ed ecco che mi ritrovo davanti la webshell!
 
 ```
 ########### ########### ########### ###########
-Alternativa: usare msfvenom per generare una meterpreter_reverse_tcp, quindi stabilire un handler su msfconsole in ascolto sulla porta stabilita. 
+Alternativa: usare msfvenom per generare una meterpreter_reverse_tcp, quindi stabilire un handler su msfconsole in ascolto sulla porta stabilita. Quindi aprire una shell, renderla interattiva con bash -i, quindi:
+
+www-data@ubuntu:/var/www/Magic/images/uploads$ 
 ########### ########### ########### ###########
 ```
