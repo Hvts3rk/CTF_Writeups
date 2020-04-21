@@ -31,3 +31,12 @@ Alternativa: usare msfvenom per generare una meterpreter_reverse_tcp, quindi sta
 www-data@ubuntu:/var/www/Magic/images/uploads$ 
 ########### ########### ########### ###########
 ```
+## Privilege Escalation
+
+### www-data -> Theseus
+
+Navigo nelle directory del webserver e rintraccio le credenziali di connessione al db:
+```
+private static $dbUsername = 'theseus';
+private static $dbUserPassword = 'i[...]s';
+```
