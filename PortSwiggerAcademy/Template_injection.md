@@ -62,3 +62,14 @@ Ciao, funziona!{{#with "s" as |string|}}
   {{/with}}
 {{/with}}
 ```
+
+## Django
+* Per mostrare tutti gli oggetti:
+```
+{% debug %}
+```
+* Per interagire con essi:
+```
+(Es. SECRET_KEY: valore segreto che potrebbe contenere chiavi autenticative)
+{{settings.SECRET_KEY}}
+```
