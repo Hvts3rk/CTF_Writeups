@@ -8,8 +8,9 @@ ${{<%[%'"}}%\
 * Inserire fra l'apertura e la chiusura 7*7. Se viene stampato 49 allora è responsive e vulnerabile;
 
 # Identification
-* Causare uno stacktrace per leggere il nome del template engine usato;
-* Trovare qualche informazione nel codice sorgente.
+* Causare uno stacktrace per leggere il nome del template engine usato (inserendo banalmente una variabile insistente, come: ${my_var});
+* Trovare qualche informazione nel codice sorgente;
+* Leggere la documentazione del template rilevato.
 
 # Exploitation
 (ricordati di codificare i payload in URL syntax)
