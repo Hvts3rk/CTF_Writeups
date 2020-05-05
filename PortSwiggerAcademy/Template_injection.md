@@ -1,7 +1,7 @@
 # Caratteri di verifica:
 ```
 ${{<%[%'"}}%\
-
+```
 
 # Detection
 * Usare i simboli base per vedere se qualcuno causa qualche effetto indisiderato (come rendere invisibile una parte di testo);
